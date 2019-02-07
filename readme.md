@@ -24,16 +24,16 @@ const gulp = require('gulp');
 const criticalCss = require('gulp-critical-css');
 
 gulp.task('default', () => {
-	gulp.src('src/file.css')
-		.pipe(criticalCss())
-		.pipe(gulp.dest('dist'))
+  gulp.src('src/file.css')
+    .pipe(criticalCss())
+    .pipe(gulp.dest('dist'))
 );
 ```
 
 ## Usage in CSS
-By default every rule that contains `critical: this;` is extracted into the critical file.
 
-If you want to extract Selectors matching a RegExp or selectors that does not contain `critical: this;` take a look at the options.
+### Property mode (default)
+Every rule that contains `critical: this;` is extracted into the critical file.
 
 ```css
 // This Selector will be extracted
@@ -48,6 +48,23 @@ If you want to extract Selectors matching a RegExp or selectors that does not co
 }
 ```
 
+### Comment mode
+
+```css
+// This Selector will be extracted
+.my-selector {
+    /*!critical!*/
+    color: red;
+}
+
+// This Selector will not
+.my-other-selector {
+    color: green;
+}
+```
+
+If you want to extract Selectors matching a RegExp or selectors, take a look at the options.
+
 ## API
 
 ### criticalCss([options])
@@ -56,8 +73,8 @@ If you want to extract Selectors matching a RegExp or selectors that does not co
 
 ##### selectors
 
-Type: `Array<String,RegExp>`<br>
-Default: `[]`
+* Type: `Array<String,RegExp>`<br>
+* Default: `[]`
 
 Lets you define Selectors to extract into critical.
 This may be a simple string like `.navbar > .nav`, `a` or a `RegExp`.
@@ -65,6 +82,29 @@ This may be a simple string like `.navbar > .nav`, `a` or a `RegExp`.
 Strings are compared to the found selectors with
 `foundSelector.indexOf(selector) !== -1` Regular expressions are tested with
 `regEx.test(foundSelector)`
+
+##### mode
+
+* Type: `String`<br>
+* Default: `'property'`
+
+Lets you define detection mode.
+
+Setting mode to `'property'` will extract rules which contain the following property:
+```css
+  critical: this;
+```
+Setting mode to `'comment'` will extract rules which contain the following property:
+```css
+  /*!critical!*/
+```
+
+##### removeCritical
+
+* Type: `Boolean`<br>
+* Default: `true`
+
+Lets you define whether to remove the critical css from the full css file.
 
 
 ## Next Steps

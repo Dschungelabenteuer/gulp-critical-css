@@ -1,14 +1,28 @@
 var postcss = require('postcss');
 
-module.exports = postcss.plugin('extractCritical', function (opts) {
-	opts = opts || {};
-	// Work with options here
+module.exports = postcss.plugin('cleanCritical', function (opts) {
+  opts = opts || {};
+  // Work with options here
 
-	return function (css) {
-		css.walkDecls(function (decl) {
-			if (decl.prop === 'critical') {
-				decl.remove();
-			}
-		});
-	};
+  return function (css) {
+    switch (opts.mode) {
+      // Comment detection
+      case 'comment':
+        rule.walkComments(function (comment) {
+          if (comment.text === '!critical!') {
+            comment.remove();
+          }
+        });
+        break;
+      // Property detection
+      case 'propety':
+      default:
+        css.walkDecls(function (decl) {
+          if (decl.prop === 'critical') {
+            decl.remove();
+          }
+        });
+        break;
+    }
+  };
 });
