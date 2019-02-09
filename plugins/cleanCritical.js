@@ -8,7 +8,7 @@ module.exports = postcss.plugin('cleanCritical', function (opts) {
     switch (opts.mode) {
       // Comment detection
       case 'comment':
-        rule.walkComments(function (comment) {
+        css.walkComments(function (comment) {
           if (comment.text === '!critical!') {
             comment.remove();
           }
